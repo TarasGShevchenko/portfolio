@@ -22,7 +22,7 @@ There is no test framework configured yet. Husky hooks: `pre-commit` → lint-st
 
 ## Environments and deploys
 
-Branches map to environments: `master` → production (starg.shop), `staging` → staging.starg.shop (Vercel Preview scoped to the `staging` branch), local → `.env.local`. Feature branches merge into `staging` first, then `staging` → `master`. Vercel's Git integration does the deploying; GitHub Actions only runs checks.
+Branches map to environments: `master` → production (starg.shop), `staging` → staging.starg.shop (Vercel Preview scoped to the `staging` branch), local → `.env.local`. Feature branches merge into `staging` first, then `staging` → `master`. Both branches are protected on GitHub (PR + green CI required, no direct pushes). Vercel's Git integration does the deploying, but `vercel.json` → `scripts/vercel-ignore-build.sh` skips every branch except `master` and `staging`, so deploys happen only on merge; GitHub Actions only runs checks.
 
 Read env vars only through `lib/env.ts` (`env.appEnv`, `env.siteUrl`, `isProduction`), and add new keys to `.env.example` and the README table. `NEXT_PUBLIC_*` values are inlined at build time and must be referenced as literal `process.env.NAME`. Non-production builds set `robots: noindex` in `app/layout.tsx`.
 

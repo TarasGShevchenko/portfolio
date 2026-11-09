@@ -44,9 +44,11 @@ Only production is indexable by search engines; staging and local send `noindex`
 
 ## Workflow and CI/CD
 
-1. Branch off `staging` (`feat/...`, `fix/...`) and open a pull request into `staging`.
-2. **CI** (GitHub Actions, `.github/workflows/ci.yml`) runs format check, lint, typecheck and build on every PR and on pushes to `staging` and `master`. Vercel also posts a preview URL on the PR.
+`master` and `staging` are protected on GitHub: no direct pushes, changes land only through a pull request with a green CI check.
+
+1. Branch off `staging` (`feat/...`, `fix/...`, `chore/...`), push it and open a pull request into `staging`.
+2. **CI** (GitHub Actions, `.github/workflows/ci.yml`) runs format check, lint, typecheck and build on the PR. Merging is blocked until it passes.
 3. Merge into `staging` → Vercel deploys https://staging.starg.shop.
 4. Open a PR `staging` → `master`, merge → Vercel deploys production at https://starg.shop.
 
-**CD** is handled by the Vercel GitHub integration: every push builds and deploys automatically, with no deploy step in GitHub Actions.
+**CD** is the Vercel GitHub integration. `vercel.json` sets an Ignored Build Step (`scripts/vercel-ignore-build.sh`) so Vercel builds only `master` and `staging`; feature branches and PRs get no deployments. Because both branches are protected, a deploy happens only after a PR is merged.
