@@ -1,38 +1,94 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+/* Theme: follows the OS by default; data-theme on <html> (set by the toggle and the inline
+   script in app/layout.tsx) overrides it. Utilities use the semantic tokens below. */
 @theme inline {
-  --color-blueprint: #1c2c8f;
-  --color-line: #d9e2ff;
-  --color-paper: #f2f5ff;
-  --color-muted: #8e9bd6;
-  --color-signal: #ffd23f;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
+  --color-signal: var(--signal);
   --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Dark: white lines on blueprint blue. */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background: #1c2c8f;
+  --foreground: #f2f5ff;
+  --line: #d9e2ff;
+  --muted: #8e9bd6;
+  --signal: #ffd23f;
+  --grid: 217 226 255;
+}
+
+/* Light: blue ink on cool drafting paper; ochre keeps the accent readable on white. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+    --background: #f4f6fc;
+    --foreground: #14206b;
+    --line: #2a3ba8;
+    --muted: #5c6aae;
+    --signal: #a86a00;
+    --grid: 42 59 168;
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --background: #f4f6fc;
+  --foreground: #14206b;
+  --line: #2a3ba8;
+  --muted: #5c6aae;
+  --signal: #a86a00;
+  --grid: 42 59 168;
+}
+
 body {
-  background-color: var(--color-blueprint);
+  background-color: var(--background);
   /* Faint drafting grid: 8px minor, 64px major. */
   background-image:
-    linear-gradient(rgb(217 226 255 / 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(217 226 255 / 0.09) 1px, transparent 1px),
-    linear-gradient(rgb(217 226 255 / 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(217 226 255 / 0.035) 1px, transparent 1px);
+    linear-gradient(rgb(var(--grid) / 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--grid) / 0.09) 1px, transparent 1px),
+    linear-gradient(rgb(var(--grid) / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--grid) / 0.035) 1px, transparent 1px);
   background-size:
     64px 64px,
     64px 64px,
     8px 8px,
     8px 8px;
-  color: var(--color-paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
 }
 
 ::selection {
-  background: var(--color-signal);
-  color: var(--color-blueprint);
+  background: var(--signal);
+  color: var(--background);
+}
+
+/* Which icon the theme toggle shows is decided by CSS, so server HTML never mismatches. */
+.theme-icon-sun {
+  display: none;
+}
+:root[data-theme='dark'] .theme-icon-sun {
+  display: block;
+}
+:root[data-theme='dark'] .theme-icon-moon {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-icon-sun {
+    display: block;
+  }
+  :root:not([data-theme='light']) .theme-icon-moon {
+    display: none;
+  }
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--signal);
   outline-offset: 4px;
 }
 
