@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# starg.shop
 
-## Getting Started
+Portfolio and storefront for landing pages: work samples for employers and commercial landing pages built for companies. Built with Next.js 16 (App Router, Cache Components) and Tailwind CSS v4.
 
-First, run the development server:
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+nvm use               # Node 22, see .nvmrc
+npm install           # also installs git hooks (husky)
+cp .env.example .env.local
+npm run dev           # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Script                                    | What it does                              |
+| ----------------------------------------- | ----------------------------------------- |
+| `npm run dev`                             | Dev server                                |
+| `npm run build` / `npm run start`         | Production build / serve it               |
+| `npm run lint` / `npm run lint:fix`       | ESLint                                    |
+| `npm run format` / `npm run format:check` | Prettier (with Tailwind class sorting)    |
+| `npm run typecheck`                       | Generate route types, then `tsc --noEmit` |
+| `npm run check`                           | Everything CI runs except the build       |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Git hooks: `pre-commit` runs lint-staged (ESLint + Prettier on staged files), `pre-push` runs the typecheck.
 
-## Learn More
+## Environments
 
-To learn more about Next.js, take a look at the following resources:
+| Environment | Git branch | URL                        | Vercel environment         |
+| ----------- | ---------- | -------------------------- | -------------------------- |
+| production  | `master`   | https://starg.shop         | Production                 |
+| staging     | `staging`  | https://staging.starg.shop | Preview (branch `staging`) |
+| local       | any        | http://localhost:3000      | — (`.env.local`)           |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Variables (see `.env.example`, read through `lib/env.ts`):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable                    | production           | staging                      | local                   |
+| --------------------------- | -------------------- | ---------------------------- | ----------------------- |
+| `NEXT_PUBLIC_APP_ENV`       | `production`         | `staging`                    | `local`                 |
+| `NEXT_PUBLIC_SITE_URL`      | `https://starg.shop` | `https://staging.starg.shop` | `http://localhost:3000` |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | optional             | optional                     | optional                |
 
-## Deploy on Vercel
+Only production is indexable by search engines; staging and local send `noindex`. `NEXT_PUBLIC_*` values are inlined at build time, so changing one in Vercel needs a redeploy.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Workflow and CI/CD
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Branch off `staging` (`feat/...`, `fix/...`) and open a pull request into `staging`.
+2. **CI** (GitHub Actions, `.github/workflows/ci.yml`) runs format check, lint, typecheck and build on every PR and on pushes to `staging` and `master`. Vercel also posts a preview URL on the PR.
+3. Merge into `staging` → Vercel deploys https://staging.starg.shop.
+4. Open a PR `staging` → `master`, merge → Vercel deploys production at https://starg.shop.
+
+**CD** is handled by the Vercel GitHub integration: every push builds and deploys automatically, with no deploy step in GitHub Actions.
