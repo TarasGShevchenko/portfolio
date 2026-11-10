@@ -13,7 +13,6 @@ function parseAppEnv(value: string | undefined): AppEnv {
 export const env = {
   appEnv: parseAppEnv(process.env.NEXT_PUBLIC_APP_ENV),
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || undefined,
 } as const
 
 export const isProduction = env.appEnv === 'production'

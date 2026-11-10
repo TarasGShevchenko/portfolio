@@ -1,3 +1,4 @@
+import { SectionEyebrow } from '@/components/section-eyebrow'
 import { experience, formatPeriod } from '@/lib/experience'
 import { ExperienceScroller, type ExperienceItem } from './experience-scroller'
 import './experience.css'
@@ -18,10 +19,7 @@ export function ExperienceSection() {
         items={items}
         heading={
           <>
-            <p className='flex items-center gap-3 text-xs font-medium tracking-[0.12em] text-muted uppercase sm:text-sm'>
-              <span aria-hidden='true' className='h-px w-8 bg-signal' />
-              Experience
-            </p>
+            <SectionEyebrow number='03' label='What I do' />
             <h2
               id='experience-title'
               className='mt-3 max-w-3xl text-[clamp(1.5rem,3.2vw,2.5rem)] leading-tight font-bold text-balance'
