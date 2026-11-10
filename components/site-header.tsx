@@ -1,10 +1,11 @@
+import Link from 'next/link'
 import { HeaderShell } from '@/components/header-shell'
 import { MobileMenu } from '@/components/mobile-menu'
 import { NavLinks } from '@/components/nav-links'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Wordmark } from '@/components/wordmark'
 import { env, isProduction } from '@/lib/env'
-import { navigation } from '@/lib/site'
+import { contacts, navigation } from '@/lib/site'
 
 // Fixed and transparent over the top of the page (the future hero), with a background once
 // the page scrolls (HeaderShell). Pages start their content below it with pt-(--header-h).
@@ -35,15 +36,13 @@ export function SiteHeader() {
             </span>
           )}
           <ThemeToggle />
-          {env.contactEmail && (
-            <a
-              href={`mailto:${env.contactEmail}`}
-              className='hidden h-9 items-center rounded-full border-2 border-signal px-4 text-sm font-semibold text-signal transition-colors hover:bg-signal hover:text-background sm:inline-flex'
-            >
-              Start a project
-            </a>
-          )}
-          <MobileMenu items={navigation} contactEmail={env.contactEmail} />
+          <Link
+            href='/#contact'
+            className='hidden h-9 items-center rounded-full border-2 border-signal px-4 text-sm font-semibold text-signal transition-colors hover:bg-signal hover:text-background sm:inline-flex'
+          >
+            Start a project
+          </Link>
+          <MobileMenu items={navigation} contactEmail={contacts.clients} />
         </div>
       </div>
 

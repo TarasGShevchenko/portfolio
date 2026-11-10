@@ -21,3 +21,10 @@ export const socials = [
 ] as const
 
 export const author = 'Taras Shevchenko'
+
+// Public contacts: clients and recruiters each get their own inbox.
+export const contacts = {
+  clients: 'stargcorp@gmail.com',
+  recruiters: 'tarasgsheva@gmail.com',
+  telegram: 'https://t.me/stargcorp',
+} as const
