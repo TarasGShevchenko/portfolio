@@ -1,0 +1,136 @@
+/* Pinned experience: big odometer number + swapping cards + progress rail. */
+
+.exp-stage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 1.25rem;
+  min-height: 0;
+}
+@media (width >= 48rem) {
+  .exp-stage {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    gap: 3rem;
+  }
+}
+
+/* ---------- Odometer number ---------- */
+
+.exp-counter {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  font-size: clamp(7rem, 30vw, 22rem);
+}
+/* Odometer window, one number tall. The column is reversed (01 at the bottom), so showing
+   number N means sliding the column down by N rows: only positive offsets. */
+.exp-digits {
+  display: flex;
+  flex-direction: column-reverse;
+  height: 0.86em;
+  overflow: hidden;
+  font-weight: 800;
+  font-variation-settings:
+    'wdth' 75,
+    'opsz' 96;
+  line-height: 0.86;
+  font-variant-numeric: tabular-nums;
+}
+/* Every number slides by the active index, so the column rolls like an odometer. */
+.exp-digits span {
+  display: block;
+  flex-shrink: 0;
+  height: 0.86em;
+  translate: 0 calc(var(--active, 0) * 100%);
+  transition:
+    translate 0.7s cubic-bezier(0.7, 0, 0.2, 1),
+    color 0.5s;
+  color: transparent;
+  -webkit-text-stroke: 2px color-mix(in oklab, var(--muted) 60%, transparent);
+}
+.exp-digits span[data-on] {
+  -webkit-text-stroke-color: transparent;
+  background: linear-gradient(
+    160deg,
+    var(--foreground) 10%,
+    color-mix(in oklab, var(--foreground) 55%, var(--signal)) 100%
+  );
+  background-clip: text;
+}
+
+.exp-total {
+  padding-bottom: 0.08em;
+  color: var(--muted);
+  font-size: clamp(0.9rem, 1.6vw, 1.25rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- Cards ---------- */
+
+.exp-cards {
+  display: grid;
+  min-height: 0;
+  overflow: hidden;
+}
+.exp-card {
+  grid-area: 1 / 1;
+  align-self: start;
+  transition:
+    opacity 0.45s ease,
+    translate 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (width >= 48rem) {
+  .exp-card {
+    align-self: center;
+  }
+}
+.exp-card[data-state='past'] {
+  opacity: 0;
+  scale: 0.96;
+  pointer-events: none;
+}
+.exp-card[data-state='next'] {
+  opacity: 0;
+  translate: 0 2.5rem;
+  pointer-events: none;
+}
+
+/* ---------- Progress rail ---------- */
+
+.exp-rail {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+}
+.exp-tick {
+  width: 1.5rem;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--line) 18%, transparent);
+  cursor: pointer;
+  transition:
+    width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s;
+}
+.exp-tick:hover {
+  background: color-mix(in oklab, var(--line) 50%, transparent);
+}
+.exp-tick[data-done] {
+  background: color-mix(in oklab, var(--signal) 45%, transparent);
+}
+.exp-tick[data-on] {
+  width: 3.5rem;
+  background: var(--signal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exp-digits span,
+  .exp-card,
+  .exp-tick {
+    transition: none;
+  }
+}

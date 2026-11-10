@@ -5,9 +5,8 @@ export const THEME_STORAGE_KEY = 'theme'
 type Theme = 'light' | 'dark'
 
 function currentTheme(): Theme {
-  const attr = document.documentElement.getAttribute('data-theme')
-  if (attr === 'light' || attr === 'dark') return attr
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  // Dark is the default; only an explicit data-theme='light' means light.
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
 }
 
 export function ThemeToggle() {
