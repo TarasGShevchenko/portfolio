@@ -24,7 +24,7 @@ There is no test framework configured yet. Husky hooks: `pre-commit` → lint-st
 
 Branches map to environments: `master` → production (starg.shop), `staging` → staging.starg.shop (Vercel Preview scoped to the `staging` branch), local → `.env.local`. Feature branches merge into `staging` first, then `staging` → `master`. Both branches are protected on GitHub (PR + green CI required, no direct pushes). Vercel's Git integration does the deploying, but `vercel.json` → `scripts/vercel-ignore-build.sh` skips every branch except `master` and `staging`, so deploys happen only on merge; GitHub Actions only runs checks.
 
-Read env vars only through `lib/env.ts` (`env.appEnv`, `env.siteUrl`, `isProduction`), and add new keys to `.env.example` and the README table. `NEXT_PUBLIC_*` values are inlined at build time and must be referenced as literal `process.env.NAME`. Non-production builds set `robots: noindex` in `app/layout.tsx`.
+Read env vars only through `lib/env.ts` (`env.appEnv`, `env.siteUrl`, `isProduction`) or, for secrets, `lib/env.server.ts` (`serverEnv`, guarded by `server-only`), and add new keys to `.env.example` and the README table. `NEXT_PUBLIC_*` values are inlined at build time and must be referenced as literal `process.env.NAME`. Non-production builds set `robots: noindex` in `app/layout.tsx`.
 
 ## Architecture
 
@@ -33,3 +33,4 @@ Read env vars only through `lib/env.ts` (`env.appEnv`, `env.siteUrl`, `isProduct
 - **Styling**: Tailwind CSS v4, wired in through a Turbopack loader rule (`@tailwindcss/turbopack` on `*.css` in `next.config.ts`). There is no `postcss.config` or `tailwind.config`. Colors are semantic tokens in `app/globals.css` (`background`, `foreground`, `line`, `muted`, `signal`) backed by CSS variables, so components never need `dark:` variants.
 - **Theming**: light/dark follows `prefers-color-scheme` unless `<html data-theme>` overrides it. `components/theme-toggle.tsx` sets the attribute and saves it to `localStorage['theme']`; an inline script in `app/layout.tsx` re-applies it before first paint (no flash). Theme-dependent UI is switched with CSS (see `.theme-icon-*`), not React state, to keep server HTML hydration-safe.
 - **Imports**: path alias `@/*` maps to the repo root.
+- **No negative values** (owner's rule): never write negative margin, padding, letter-spacing (including `tracking-tight`/`tracking-tighter`), positioning offsets (`top`/`bottom`/`inset`), translate/rotate, z-index or shadow spread, in CSS or Tailwind (`-m-*`, `-z-*`, `-translate-*`, ...). Restructure instead: anchor from the other side, reverse the order, use positive offsets or DOM order for stacking.

@@ -39,8 +39,9 @@ Variables (see `.env.example`, read through `lib/env.ts`):
 | `NEXT_PUBLIC_APP_ENV`       | `production`         | `staging`                    | `local`                 |
 | `NEXT_PUBLIC_SITE_URL`      | `https://starg.shop` | `https://staging.starg.shop` | `http://localhost:3000` |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | optional             | optional                     | optional                |
+| `GROQ_API_KEY`              | secret               | secret                       | optional                |
 
-Only production is indexable by search engines; staging and local send `noindex`. `NEXT_PUBLIC_*` values are inlined at build time, so changing one in Vercel needs a redeploy.
+`GROQ_API_KEY` is server-only (read via `lib/env.server.ts`) and powers the hero chat at `/api/chat` on Groq's free tier; without it, or when the free quota runs out, the chat answers from prepared replies in `lib/profile.ts`. Only production is indexable by search engines; staging and local send `noindex`. `NEXT_PUBLIC_*` values are inlined at build time, so changing one in Vercel needs a redeploy.
 
 ## Workflow and CI/CD
 
